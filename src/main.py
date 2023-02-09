@@ -1,49 +1,123 @@
+"""!
+@file basic_tasks.py
+    This file contains a demonstration program that runs some tasks, an
+    inter-task shared variable, and a queue. The tasks don't really @b do
+    anything; the example just shows how these elements are created and run.
+
+@author JR Ridgely
+@date   2021-Dec-15 JRR Created from the remains of previous example
+@copyright (c) 2015-2021 by JR Ridgely and released under the GNU
+    Public License, Version 2.
+    
+    Rename basic_tasks.py as main.py. Use the example of a
+    task function in main.py and what you’ve learned in lecture
+    to write a task which runs the closed-loop motor controller
+    you have previously written. Hook up a motor from
+    your tub and run this task using the cotask.py scheduler
+    with its task timing at around 10 ms.
+    
+    Run the motor task on a motor with a flywheel, printing results and plotting
+        step response graphs as you did in the previous exercise. Run the task at a
+        slower and slower rate until the controller’s performance
+        is noticeably worsened as shown on a step response plot. Record the slowest
+        rate at which the performance is not significantly worse than when running
+        the controller at a fast rate; this will help you choose a good run rate for
+        the motor control task – it should be a bit faster than the slowest rate which
+        works for a factor of safety. Save copies of the step response plots for the
+        slowest rate at which the response is good and for a rate at which the
+        response isn’t as good. Optional: Plot several responses on one set of axes,
+        with a legend showing the task run rate of each.
+
+Make two tasks which run two motors under closed-loop control at the same time.
+Write a test program which moves your motors simultaneously through different
+distances and holds them at the desired positions, and use it to test your code
+as thoroughly as possible.
+"""
+
+import gc
+import pyb
+import cotask
+import task_share
+
 from PWM_Calc import PWM_Calc
 import pyb, time
 from encoder_reader import EncoderClass
 from  motor_driver import MotorDriver
-#com6 for shoe
-#com5 for stm32
 
+import motor1
+import motor2
+
+def task1_fun(shares):
+    """! Motor 1, everything 
+    Task which puts things into a share and a queue.
+    @param shares A list holding the share and queue used by this task
+    """
+    # Get references to the share and queue which have been passed to this task
+    my_share, my_queue = shares
+    
+    counter = 0
+    while True:
+        my_share.put(counter)
+        my_queue.put(counter)
+        counter += 1
+
+        yield 0
+
+
+def task2_fun(shares):
+    """! Motor 2, everything
+    Task which takes things out of a queue and share and displays them.
+    @param shares A tuple of a share and queue from which this task gets data
+    """
+    # Get references to the share and queue which have been passed to this task
+    the_share, the_queue = shares
+
+    while True:
+        # Show everything currently in the queue and the value in the share
+        print(f"Share: {the_share.get ()}, Queue: ", end='')
+        while q0.any():
+            print(f"{the_queue.get ()} ", end='')
+        print('')
+
+        yield 0
+
+
+# This code creates a share, a queue, and two tasks, then starts the tasks. The
+# tasks run until somebody presses ENTER, at which time the scheduler stops and
+# printouts show diagnostic information about the tasks, share, and queue.
 if __name__ == "__main__":
-    """!
-        This is our main, from here we can call MotorDriver() and EncoderClass()
-        classes and specify the specific parameters based on what pins we are 
-        using.
-        From EncoderClass() we call: In1pin and In2pin to define the pins (B6/B7 or C6/C7). 
-        And the TimerNR for the timer channel based on the In pins (TCh 4 or 8)
-        From MotorDriver() we call: the pin to enable to motor (EN_Pin)
-        and set the torque control pins (PB4/5 or PA0/1) as well as the corresponding
-        timer (3 or 5)
-        We can also call the set_duty_cycle() class to set a specific duty cycle that will
-        run the motor in the correct direction at a specific speed
-        """
-    
-    Motor1=MotorDriver(pyb.Pin.board.PA10,pyb.Pin.board.PB4,pyb.Pin.board.PB5,3)
-    #Motor1.set_duty_cycle(0)
-    encoder=EncoderClass(pyb.Pin.board.PB6,pyb.Pin.board.PB7,4)
-    encoder.zero()
-    pwm = PWM_Calc()
-    
-    Theta_Set = input("set position: ")
-    KP = input("set KP: ")
-    #KP = 0.025 for decent data
-    time_step = 0.01
-    
-    pwm.set_setpoint(Theta_Set)
-    pwm.set_KP(KP)
+    print("Testing ME405 stuff in cotask.py and task_share.py\r\n"
+          "Press Ctrl-C to stop and show diagnostics.")
 
-        
-    for i in range (400):
-         Theta_Act = encoder.read()
-         PWM = pwm.Run(Theta_Act)
-         
-         Motor1.set_duty_cycle(PWM)                
-         time.sleep(time_step) #updates 0.01s
-         
-    Motor1.set_duty_cycle(0)       
-    pwm.Print_Data()
-    
-    
-    
-    
+    # Create a share and a queue to test function and diagnostic printouts
+    share0 = task_share.Share('h', thread_protect=False, name="Share 0")
+    q0 = task_share.Queue('L', 16, thread_protect=False, overwrite=False,
+                          name="Queue 0")
+
+    # Create the tasks. If trace is enabled for any task, memory will be
+    # allocated for state transition tracing, and the application will run out
+    # of memory after a while and quit. Therefore, use tracing only for 
+    # debugging and set trace to False when it's not needed
+    task1 = cotask.Task(motor1.Motor1(), name="Motor_1", priority=1, period=10,
+                        profile=True, trace=False, shares=(share0, q0))
+    task2 = cotask.Task(motor2.Motor2(), name="Motor_2", priority=2, period=10,
+                        profile=True, trace=False, shares=(share0, q0))
+    cotask.task_list.append(task1)
+    cotask.task_list.append(task2)
+
+    # Run the memory garbage collector to ensure memory is as defragmented as
+    # possible before the real-time scheduler is started
+    gc.collect()
+
+    # Run the scheduler with the chosen scheduling algorithm. Quit if ^C pressed
+    while True:
+        try:
+            cotask.task_list.pri_sched()
+        except KeyboardInterrupt:
+            break
+
+    # Print a table of task data and a table of shared information data
+    print('\n' + str (cotask.task_list))
+    print(task_share.show_all())
+    print(task1.get_trace())
+    print('')
