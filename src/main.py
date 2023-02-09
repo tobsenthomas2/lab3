@@ -47,39 +47,6 @@ from  motor_driver import MotorDriver
 import motor1
 import motor2
 
-def task1_fun(shares):
-    """! Motor 1, everything 
-    Task which puts things into a share and a queue.
-    @param shares A list holding the share and queue used by this task
-    """
-    # Get references to the share and queue which have been passed to this task
-    my_share, my_queue = shares
-    
-    counter = 0
-    while True:
-        my_share.put(counter)
-        my_queue.put(counter)
-        counter += 1
-
-        yield 0
-
-
-def task2_fun(shares):
-    """! Motor 2, everything
-    Task which takes things out of a queue and share and displays them.
-    @param shares A tuple of a share and queue from which this task gets data
-    """
-    # Get references to the share and queue which have been passed to this task
-    the_share, the_queue = shares
-
-    while True:
-        # Show everything currently in the queue and the value in the share
-        print(f"Share: {the_share.get ()}, Queue: ", end='')
-        while q0.any():
-            print(f"{the_queue.get ()} ", end='')
-        print('')
-
-        yield 0
 
 
 # This code creates a share, a queue, and two tasks, then starts the tasks. The
@@ -98,9 +65,9 @@ if __name__ == "__main__":
     # allocated for state transition tracing, and the application will run out
     # of memory after a while and quit. Therefore, use tracing only for 
     # debugging and set trace to False when it's not needed
-    task1 = cotask.Task(motor1.Motor1(), name="Motor_1", priority=1, period=10,
+    task1 = cotask.Task(motor1.Motor1, name="Motor_1", priority=1, period=10,
                         profile=True, trace=False, shares=(share0, q0))
-    task2 = cotask.Task(motor2.Motor2(), name="Motor_2", priority=2, period=10,
+    task2 = cotask.Task(motor2.Motor2, name="Motor_2", priority=2, period=10,
                         profile=True, trace=False, shares=(share0, q0))
     cotask.task_list.append(task1)
     cotask.task_list.append(task2)
