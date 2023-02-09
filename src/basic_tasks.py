@@ -7,7 +7,14 @@
 @author JR Ridgely
 @date   2021-Dec-15 JRR Created from the remains of previous example
 @copyright (c) 2015-2021 by JR Ridgely and released under the GNU
-    Public License, Version 2. 
+    Public License, Version 2.
+    
+    Rename basic_tasks.py as main.py. Use the example of a
+    task function in main.py and what you’ve learned in lecture
+    to write a task which runs the closed-loop motor controller
+    you have previously written. Hook up a motor from
+    your tub and run this task using the cotask.py scheduler
+    with its task timing at around 10 ms.
 """
 
 import gc
