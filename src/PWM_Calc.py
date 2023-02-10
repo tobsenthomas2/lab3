@@ -10,8 +10,14 @@ Multiply the error signal by a control gain called KP to produce a result called
 \mathrm{PWM} = K_p * (\theta_{setpoint} - \theta_{actual})
 
 Send the actuation signal to the motor driver which you have already written to control the magnitude and direction of motor torque."""
-#import matplotlib as
-#KP = %/Ticks
+
+"""!Class PWM_Calc: A class to implement a Proportional-Windup Controller.
+The class stores the time, position, error, and PWM values and has functions
+to set the controller's parameters, run the control loop, and print the stored
+data to the serial port.
+
+The constructor initializes the instance variables `KP_set`, `Theta_Set`, `time`, `position`, `error`, and `pwm` to 0.
+"""
 
 class PWM_Calc:
     
@@ -23,13 +29,35 @@ class PWM_Calc:
         self.error = []
         self.pwm = []
         
+"""!set_KP
+
+A function to set the proportional gain `KP` of the controller.
+
+@param[in] `KP`: The proportional gain to set."""
+
+        
     def set_KP(self, KP):
         
         self.KP_set = float(KP)
+"""!#### set_setpoint
+
+A function to set the setpoint `ThetaSet` of the controller.
+
+@param[in] `ThetaSet`: The setpoint to set.
+"""
         
     def set_setpoint(self, ThetaSet):
         
         self.Theta_Set = float(ThetaSet)
+        
+"""!#### Run
+
+A function that runs the control loop and updates the stored `time`, `position`, `error`, and `pwm` values.
+
+@param[in] `Theta_Act`: The current position measurement.
+
+Returns, the control output, `PWM`, as a float.
+"""
         
     def Run(self, Theta_Act):
         
@@ -46,17 +74,19 @@ class PWM_Calc:
         
         return PWM
     
-    def Print_Data(self):
-#         for i in range(len(self.time)):
-#             print(str(self.time[i]-self.time[0])+","+str(self.position[i]))
-            
-            
+"""! Print_Data
 
-#         with serial.Serial ('COMx', 115200) as s_port:
-#             for i in range(len(self.time)):
-#                 t = self.time[i]-self.time[0]
-#                 x = self.position[i]
-#                 s_port.write(f"{t},{x}\r\n")       #Write bytes, not a string
+A function that prints the stored `time`, `position`, `error`, and
+`pwm` values to the serial port. The data is sent as comma-separated
+values, with each data point in a separate line. The function sends two
+flags to indicate to the receiver when all the data has been sent.
+
+##### Raises
+
+An exception if an error occurs while sending the data."""
+    
+    def Print_Data(self):
+
         
         try: 
             u2 = pyb.UART(2, baudrate=115200)      # Set up the second USB-serial port
@@ -74,14 +104,7 @@ class PWM_Calc:
         except:
             print("An exception occurred. Sending Data didnt work")
 
-        
-        
-        
-        
-        
-        
-        #user supplies thetaset, takes thetaact from encoder
-        #subtracts and multiplies by KP that we define and outputs the PWM magnitude for MotorDriver()
+
         
         
     

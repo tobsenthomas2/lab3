@@ -8,6 +8,10 @@ from matplotlib import pyplot
 #cant start program from "usaual" python terminal --> use thonny python and use the following command
 #& 'C:\Program Files (x86)\Thonny\python.exe' .\readAndPlotOnPC.py
 
+"""!
+ * @brief Plots data received from the serial port.
+ * @param[in] input the data to be plotted.
+"""
 def plot_data(input):
     x = []
     y = []
@@ -41,15 +45,13 @@ def plot_data(input):
     pyplot.ion()
     pyplot.show()
     pyplot.pause(0.001)
-        
+    
+"""!
+ Main function that reads and plots data from the serial port.
+ """
 
 with (serial.Serial("COM5",115200) as ser):
-    #ser.flush() #clear Input buffer
-    #ser.in_waiting()#NUM of CHArs in Buffer
 
-    #ser.read(n)
-    #ser.readlines()#read until \n or \r
-    #ser.readlines()
     morePlots=True
     plotCounter=0
     dataStorage=[]

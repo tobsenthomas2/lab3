@@ -6,6 +6,14 @@ from encoder_reader import EncoderClass
 from  motor_driver import MotorDriver
 
 
+"""!The function initializes and runs the motor 1
+@param[in] reset - boolean value indicating if the motor should be reset or not
+This sets four states, 0, 1, 2, and 3. State 0 initializes the motor 1 and encoder ports.
+It also hardcodes in the KP and position. State 1 runs the encoder and PWM based on the KP and
+positional inputs. This will run for 400ms. State 2 turns off the motor and begins to print data. State 3
+is used when data is done being transmitted.
+"""
+
 def Motor2(reset):
     state = 0
     while True:
