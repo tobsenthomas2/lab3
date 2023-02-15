@@ -44,7 +44,7 @@ def Motor2(reset):
             
         elif state == 2:
             Motor2.set_duty_cycle(0)
-            pwm2.Print_Data(True)
+            pwm2.Print_Data(False)
             state = 3
             
             yield state

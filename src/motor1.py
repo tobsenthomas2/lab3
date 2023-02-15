@@ -13,6 +13,7 @@ is used when data is done being transmitted.
 """
 def Motor1(reset):
     state = 0
+    #reset=True
     while True:
         if state == 0:
             Motor1=MotorDriver(pyb.Pin.board.PA10,pyb.Pin.board.PB4,pyb.Pin.board.PB5,3)
@@ -21,7 +22,7 @@ def Motor1(reset):
             time_step = 0.01
             Theta_Set = 100000
             KP = 0.01
-            count = 0
+            count = 0 ###chnage that to time! because of the periode would change the execution time. --> chanage to time
             pwm1 = PWM_Calc()
             pwm1.set_setpoint(Theta_Set)
             pwm1.set_KP(KP)

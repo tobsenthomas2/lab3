@@ -31,20 +31,28 @@ def plot_data(input):
             except ValueError:
                 # ignore row if data is not a float
                 pass
-        pyplot.plot(x, y,color=(plotNr*32),label=str(plotNr))
-        pyplot.title("best guess - Kp good")
-        pyplot.xlabel("time")
-        pyplot.ylabel("value")
+        if  plotNr%4==0:
+            pyplot.plot(x, y,color='g',label=str(plotNr))
+        elif plotNr%4==1:
+            pyplot.plot(x, y,color='b',label=str(plotNr))
+        elif plotNr%4==2:
+            pyplot.plot(x, y,color='r',label=str(plotNr))
+        elif plotNr%4==3:
+            pyplot.plot(x, y,color='y',label=str(plotNr))
+        pyplot.legend(loc="upper left")
+        pyplot.title("Plot")
+        pyplot.xlabel("time [ms]")
+        pyplot.ylabel("position [encoder ticks]")
         print("MAX Value: "+ str(max(y)))
         
-        if plotNr>4:
+        if plotNr%4==0 and plotNr!=0:
             pyplot.figure()
             
-
+        print("plot nr: " + str(plotNr))
         plotNr+=1
     pyplot.ion()
     pyplot.show()
-    pyplot.pause(0.001)
+    pyplot.pause(0.1)
     
 """!
  Main function that reads and plots data from the serial port.
@@ -67,14 +75,15 @@ with (serial.Serial("COM5",115200) as ser):
             data.append(buf)
             if buf==[b'99999', b'99999\r\n']:
                 dataStream=False
-                print("end works!")
+                print("end this data set!")
                 data.pop()
                 if(ser.readline ().split (b',')==[b'99999', b'99999\r\n']):
                     print("last plot. you can stop now")
                     morePlots=False
-            print(buf)
+            #print(buf)
         dataStorage.append(data)
         plot_data(dataStorage)
+        dataStorage=[]
         
     
     print("last dataset was sent! will stop listening now")

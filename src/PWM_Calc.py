@@ -29,28 +29,33 @@ class PWM_Calc:
         self.error = []
         self.pwm = []
         
-"""!set_KP
+   
+    def set_KP(self, KP):
+        """!set_KP
 
 A function to set the proportional gain `KP` of the controller.
 
 @param[in] `KP`: The proportional gain to set."""
 
-        
-    def set_KP(self, KP):
+     
         
         self.KP_set = float(KP)
-"""!#### set_setpoint
+
+        
+    def set_setpoint(self, ThetaSet):
+        """!#### set_setpoint
 
 A function to set the setpoint `ThetaSet` of the controller.
 
 @param[in] `ThetaSet`: The setpoint to set.
 """
         
-    def set_setpoint(self, ThetaSet):
-        
         self.Theta_Set = float(ThetaSet)
         
-"""!#### Run
+
+        
+    def Run(self, Theta_Act):
+        """!#### Run
 
 A function that runs the control loop and updates the stored `time`, `position`, `error`, and `pwm` values.
 
@@ -58,8 +63,6 @@ A function that runs the control loop and updates the stored `time`, `position`,
 
 Returns, the control output, `PWM`, as a float.
 """
-        
-    def Run(self, Theta_Act):
         
         PWM = ((self.Theta_Set - Theta_Act)*self.KP_set)
         
@@ -74,7 +77,10 @@ Returns, the control output, `PWM`, as a float.
         
         return PWM
     
-"""! Print_Data
+
+    
+    def Print_Data(self,endplots):
+        """! Print_Data
 
 A function that prints the stored `time`, `position`, `error`, and
 `pwm` values to the serial port. The data is sent as comma-separated
@@ -84,8 +90,6 @@ flags to indicate to the receiver when all the data has been sent.
 ##### Raises
 
 An exception if an error occurs while sending the data."""
-    
-    def Print_Data(self):
 
         
         try: 
@@ -100,7 +104,10 @@ An exception if an error occurs while sending the data."""
             u2.write(f"99999,99999\r\n")
             
             #send double for flag2 to tell PC last dataset --> no more plots
-            u2.write(f"99999,99999\r\n")
+            if endplots==True:
+                print("endplots flag was True")
+            
+                u2.write(f"99999,99999\r\n")
         except:
             print("An exception occurred. Sending Data didnt work")
 
