@@ -39,11 +39,11 @@ def plot_data(inputData):
         if  plot_data.plotNr%4==0:
             pyplot.plot(x, y,color='g',label="period=10")#label=str(plot_data.plotNr))
         elif plot_data.plotNr%4==1:
-            pyplot.plot(x, y,color='b',label="period=100")#label=str(plot_data.plotNr))
+            pyplot.plot(x, y,color='b',label="period=40")#label=str(plot_data.plotNr))
         elif plot_data.plotNr%4==2:
-            pyplot.plot(x, y,color='r',label="period=110")#label=str(plot_data.plotNr))
+            pyplot.plot(x, y,color='r',label="period=50")#label=str(plot_data.plotNr))
         elif plot_data.plotNr%4==3:
-            pyplot.plot(x, y,color='y',label="period=200")#label=str(plot_data.plotNr))
+            pyplot.plot(x, y,color='y',label="period=60")#label=str(plot_data.plotNr))
         pyplot.legend(loc="upper left")
         pyplot.title("Plot")
         pyplot.xlabel("time [ms]")
