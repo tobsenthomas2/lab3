@@ -53,7 +53,7 @@ import motor2
 # tasks run until somebody presses ENTER, at which time the scheduler stops and
 # printouts show diagnostic information about the tasks, share, and queue.
 """
-if __name__ == "__main__":
+if __name__ == "__main__":	
     print("Testing ME405 stuff in cotask.py and task_share.py\r\n"
           "Press Ctrl-C to stop and show diagnostics.")
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     # allocated for state transition tracing, and the application will run out
     # of memory after a while and quit. Therefore, use tracing only for 
     # debugging and set trace to False when it's not needed
-    task1 = cotask.Task(motor1.Motor1, name="Motor_1", priority=1, period=10,
+    task1 = cotask.Task(motor1.Motor1, name="Motor_1", priority=1, period=200,
                         profile=True, trace=False, shares=(share0, q0))
     #task2 = cotask.Task(motor2.Motor2, name="Motor_2", priority=2, period=10,
     #                    profile=True, trace=False, shares=(share0, q0))

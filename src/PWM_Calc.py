@@ -11,15 +11,16 @@ Multiply the error signal by a control gain called KP to produce a result called
 
 Send the actuation signal to the motor driver which you have already written to control the magnitude and direction of motor torque."""
 
-"""!Class PWM_Calc: A class to implement a Proportional-Windup Controller.
+
+
+class PWM_Calc:
+    """!Class PWM_Calc: A class to implement a Proportional-Windup Controller.
 The class stores the time, position, error, and PWM values and has functions
 to set the controller's parameters, run the control loop, and print the stored
 data to the serial port.
 
 The constructor initializes the instance variables `KP_set`, `Theta_Set`, `time`, `position`, `error`, and `pwm` to 0.
 """
-
-class PWM_Calc:
     
     def __init__(self):
         self.KP_set = 0
@@ -99,15 +100,15 @@ An exception if an error occurs while sending the data."""
                     t = self.time[i]-self.time[0]
                     x = self.position[i]
                     u2.write(f"{t},{x}\r\n")       #Write bytes, not a string
-                
-            #flag to tell PC last data point
-            u2.write(f"99999,99999\r\n")
-            
             #send double for flag2 to tell PC last dataset --> no more plots
             if endplots==True:
                 print("endplots flag was True")
             
-                u2.write(f"99999,99999\r\n")
+                u2.write(f"99998,99998\r\n")    
+            #flag to tell PC last data point
+            u2.write(f"99999,99999\r\n")
+            
+            
         except:
             print("An exception occurred. Sending Data didnt work")
 

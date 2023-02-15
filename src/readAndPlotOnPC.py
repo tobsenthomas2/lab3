@@ -12,11 +12,12 @@ from matplotlib import pyplot
  * @brief Plots data received from the serial port.
  * @param[in] input the data to be plotted.
 """
-def plot_data(input):
+
+def plot_data(inputData):
     x = []
     y = []
-    plotNr=0
-    for dataToPlot in input:
+    print("plot datat now")
+    for dataToPlot in inputData:
         dataBuf=dataToPlot
 
         for line in dataBuf:
@@ -31,29 +32,34 @@ def plot_data(input):
             except ValueError:
                 # ignore row if data is not a float
                 pass
-        if  plotNr%4==0:
-            pyplot.plot(x, y,color='g',label=str(plotNr))
-        elif plotNr%4==1:
-            pyplot.plot(x, y,color='b',label=str(plotNr))
-        elif plotNr%4==2:
-            pyplot.plot(x, y,color='r',label=str(plotNr))
-        elif plotNr%4==3:
-            pyplot.plot(x, y,color='y',label=str(plotNr))
+        if plot_data.plotNr%4==0 and plot_data.plotNr!=0:
+            inputData()
+            pyplot.figure()
+            
+        if  plot_data.plotNr%4==0:
+            pyplot.plot(x, y,color='g',label="period=10")#label=str(plot_data.plotNr))
+        elif plot_data.plotNr%4==1:
+            pyplot.plot(x, y,color='b',label="period=100")#label=str(plot_data.plotNr))
+        elif plot_data.plotNr%4==2:
+            pyplot.plot(x, y,color='r',label="period=110")#label=str(plot_data.plotNr))
+        elif plot_data.plotNr%4==3:
+            pyplot.plot(x, y,color='y',label="period=200")#label=str(plot_data.plotNr))
         pyplot.legend(loc="upper left")
         pyplot.title("Plot")
         pyplot.xlabel("time [ms]")
         pyplot.ylabel("position [encoder ticks]")
         print("MAX Value: "+ str(max(y)))
         
-        if plotNr%4==0 and plotNr!=0:
-            pyplot.figure()
+        
             
-        print("plot nr: " + str(plotNr))
-        plotNr+=1
+        print("plot nr: " + str(plot_data.plotNr))
+        plot_data.plotNr+=1
     pyplot.ion()
     pyplot.show()
     pyplot.pause(0.1)
-    
+    #sec = input('press Enter to receive a new dataset\n')
+plot_data.plotNr=0
+
 """!
  Main function that reads and plots data from the serial port.
  """
@@ -68,18 +74,19 @@ with (serial.Serial("COM5",115200) as ser):
         ser.flushInput()
         ser.flushOutput()
         data=[]
-        dataStream=1
+        dataStream=True
         while dataStream:
             buf=ser.readline ().split (b',')
 
             data.append(buf)
+            if(buf==[b'99998', b'99998\r\n']):
+                print("last plot. you can stop now")
+                morePlots=False
             if buf==[b'99999', b'99999\r\n']:
                 dataStream=False
                 print("end this data set!")
                 data.pop()
-                if(ser.readline ().split (b',')==[b'99999', b'99999\r\n']):
-                    print("last plot. you can stop now")
-                    morePlots=False
+            
             #print(buf)
         dataStorage.append(data)
         plot_data(dataStorage)
