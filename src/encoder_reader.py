@@ -37,8 +37,6 @@ class EncoderClass:
         enc_chA = pyb.Pin(self.IN1_Pin, pyb.Pin.IN)
 
         enc_chB = pyb.Pin (self.IN2_Pin, pyb.Pin.IN)
-        # Initialize timer with a prescaler of 0 and a range of values from 0 to hex FFFF
-        # Enable the timer to count and specify the timer channel
         """
         Enables the timer to count with a prescaler of 0 and a range of values from 0 to hex FFFF,
         and allows for the timer channel to be specified.
