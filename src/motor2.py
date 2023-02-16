@@ -24,11 +24,11 @@ def Motor2(reset):
             time_step = 0.01
             Theta_Set = 100000
             KP = 0.025
-            count = 0
             pwm2 = PWM_Calc()
             pwm2.set_setpoint(Theta_Set)
             pwm2.set_KP(KP)
             state = 1
+            start = time.time_ns() // 1_000_000 #time in ms
             yield state
             
         elif state == 1:
@@ -36,9 +36,9 @@ def Motor2(reset):
             PWM = pwm2.Run(Theta_Act)
             Motor2.set_duty_cycle(PWM)
             time.sleep(time_step) #updates 0.01s
-            count += 1
-            
-            if count == 400:
+            stop = time.time_ns() // 1_000_000
+            duration=(stop-start)
+            if (int(duration)) >= 4000:#time in ms
                 state = 2
             yield state
             
