@@ -68,10 +68,10 @@ if __name__ == "__main__":
     # debugging and set trace to False when it's not needed
     task1 = cotask.Task(motor1.Motor1, name="Motor_1", priority=1, period=60,
                         profile=True, trace=False, shares=(share0, q0))
-    #task2 = cotask.Task(motor2.Motor2, name="Motor_2", priority=2, period=10,
-    #                    profile=True, trace=False, shares=(share0, q0))
+    task2 = cotask.Task(motor2.Motor2, name="Motor_2", priority=2, period=10,
+                        profile=True, trace=False, shares=(share0, q0))
     cotask.task_list.append(task1)
-    #cotask.task_list.append(task2)
+    cotask.task_list.append(task2)
 
     # Run the memory garbage collector to ensure memory is as defragmented as
     # possible before the real-time scheduler is started
