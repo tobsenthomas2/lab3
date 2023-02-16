@@ -22,27 +22,23 @@ def Motor1(reset):
             time_step = 0.01
             Theta_Set = 100000
             KP = 0.01
-            count = 0 ###chnage that to time! because of the periode would change the execution time. --> chanage to time
             pwm1 = PWM_Calc()
             pwm1.set_setpoint(Theta_Set)
             pwm1.set_KP(KP)
             state = 1
+            start = time.time_ns() // 1_000_000 #time in ms
             
             yield state
             
         elif state == 1:
-            start = time.time_ns() // 1_000_000 #time in ms
-            timeNotReached=True
-            while timeNotReached:
-                Theta_Act = encoder1.read()
-                PWM = pwm1.Run(Theta_Act)
-                Motor1.set_duty_cycle(PWM)
-                stop = time.time_ns() // 1_000_000
-                duration=(stop-start)
-                if (int(duration)) >= 4000:#time in ms
-                    timeNotReached = False
-                    state = 2
-                yield state
+            Theta_Act = encoder1.read()
+            PWM = pwm1.Run(Theta_Act)
+            Motor1.set_duty_cycle(PWM)
+            stop = time.time_ns() // 1_000_000
+            duration=(stop-start)
+            if (int(duration)) >= 4000:#time in ms
+                state = 2
+            yield state
             
         elif state == 2:
             Motor1.set_duty_cycle(0)
