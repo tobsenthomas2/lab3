@@ -7,11 +7,14 @@ The goal of this lab was it to test diffent period times for our motor tasks. Th
 
 
 We also tried different higher values to see when it is getting really bad. The discontunuity starts at 110 ms, before that only the overshoot is a problem. You can see that in the following Plot:
-![alt text](https://github.com/tobsenthomas2/lab3/blob/main/PlotPeriodsTill200.png)
-We can go upto period=100. We have a lil more overshoot with 10%
-better is period of 60 with around 2,5%, what should be good and 6 times slower than the orininal value of 10
 
-Also you can plug in two different motors and set a desired point and the controller will do it simultaniously
+![alt text](https://github.com/tobsenthomas2/lab3/blob/main/PlotPeriodsTill200.png)
+
+#conclusion:
+We can go upto period=100, but we have a overshoot with 10%, what is too high for the upcoming project.
+Better is the period of 60 with around 2,5% overshoot, what should be good and 6 times slower than the orininal value of 10, what gives us more remaining power to do other tasks in the upcoming project.
+
+You can also plug in two different motors and set a desired point and the controller will set their position simultaniously
 
 #How to use the programs:
 
